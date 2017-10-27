@@ -22,6 +22,10 @@
 #ifndef KY_SJoys_h
 #define KY_SJoys_h
 
+/*
+   The <stdint.h> header shall declare sets of integer types having specified widths.
+   It's intended to limit the variables size we are using and the system workload.
+*/
 #include <stdint.h>
 
 #define SJOY_PIN_NBR    3
@@ -33,29 +37,38 @@
 #define AXIS_MIN_VALUE  0
 #define AXIS_MAX_VALUE  1024
 
+/*
+   This truct is defined to store SJoystick state when a
+   SJoysInfo KY_SJoys::read() request occurs:
+*/
 typedef struct SJoysInfo {
-  short VRx;
-  short VRy;
-  short SW;
+  short VRx;  // X Axis status value.
+  short VRy;  // Y Axis status value.
+  short SW;   // Switch Button status.
 } SJoysInfo;
 
+/* Class definition of the Keyes SJoystick */
 class KY_SJoys {
   public:
     KY_SJoys(uint8_t VRx, uint8_t VRy, uint8_t SW, short sensitivity);
     void initialize();
-    uint16_t readVRx();
-    uint16_t readVRy();
-    uint8_t  readSW();
-    /* */
-    int readVRx(int toLow, int toHigh);
-    int readVRy(int toLow, int toHigh);
-    /* */
+    uint16_t readVRx();   // Reads the X Axis status value.
+    uint16_t readVRy();   // Reads the Y Axis status value.
+    uint8_t  readSW();    // Reads the Switch Button status.
+
+    int readVRx(int toLow, int toHigh);   // Reads the X Axis status value and re-maps it to a new range.
+    int readVRy(int toLow, int toHigh);   // Reads the X Axis status value and re-maps it to a new range.
+
+    /* Reads X Axis, Y Axis and the Switch Button in a one time operation
+       and store it in a SJoysInfo struct. */
     SJoysInfo read();
+    /* Does the same as SJoysInfo KY_SJoys::read() and re-maps it to a new range */
     SJoysInfo read(int toLow, int toHigh);
-    uint16_t roundNum(uint16_t,uint8_t);
+    /* KY_SJoys::roundNum() Rounds an integer 'toRound' to nearest multiple of 'num' */
+    uint16_t roundNum(uint16_t toRound, uint8_t num);
   private:
-    uint8_t Pin[SJOY_PIN_NBR]; /* */
-    short sensitivity;
+    uint8_t Pin[SJOY_PIN_NBR];  /* used to store the Arduino pins connected to the Keyes SJoytick pins */
+    short sensitivity;          /* defines the measurements sensitivity */
 };
 
 #endif

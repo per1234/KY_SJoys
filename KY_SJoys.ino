@@ -1,6 +1,7 @@
 #include "SJoysTask.h"
 
 uint8_t SJoysPin[SJOY_PIN_NBR] = {0, 1, 8};
+
 KY_SJoys joystick(SJoysPin[VRX_PIN],
                   SJoysPin[VRY_PIN],
                   SJoysPin[SW_PIN],
