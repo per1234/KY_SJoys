@@ -1,19 +1,20 @@
 #include "SJoysTask.h"
 
-uint8_t SJoysPin[SJOY_PIN_NBR] = {0, 1, 8};
+/* used to store the Arduino pins connected to the Keyes SJoytick pins */
+uint8_t SJoysPin[SJOY_PIN_NBR] = {0, 1, 2};
 
 KY_SJoys joystick(SJoysPin[VRX_PIN],
                   SJoysPin[VRY_PIN],
                   SJoysPin[SW_PIN],
                   EPSILON );
 
+TaskHandle_t xSJoysTaskHandle;
 QueueHandle_t xQueue;
 static void vPrintTask( void * );
 
 void setup() {
   // put your setup code here, to run once:
   joystick.initialize();
-  Serial.begin(9600);
 
   xQueue = xQueueCreate(10, sizeof(SJoysInfo));
   if (xQueue == NULL) {
@@ -23,12 +24,12 @@ void setup() {
   SJoysTaskParams xParameter = { &joystick, xQueue };
 
   xTaskCreate(
-    vJoystickTask,
+    SJOYS_TASK_CODE,
     SJOYS_TASK_NAME,
     SJOYS_STACK_DEPTH,
     (void*)&xParameter,
     SJOYS_TASK_PRIORITY,
-    NULL );
+    xSJoysTaskHandle );
 
   xTaskCreate(
     vPrintTask,
@@ -38,11 +39,12 @@ void setup() {
     NULL,
     tskIDLE_PRIORITY + 1,
     NULL );
-
+    
   vTaskStartScheduler();
 }
 
 static void vPrintTask( void * ) {
+  Serial.begin(9600);
   TickType_t xLastWakeTime;
   const TickType_t xPeriod = pdMS_TO_TICKS( SJOYS_TASK_FREQ );
   xLastWakeTime = xTaskGetTickCount();

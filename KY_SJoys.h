@@ -27,13 +27,18 @@
    It's intended to limit the variables size we are using and the system workload.
 */
 #include <stdint.h>
-
+/* Keyes SJoystick pins number */
 #define SJOY_PIN_NBR    3
+/* Macros used as reference to adress
+   the Keyes SJoystick pins */
 #define VRX_PIN         0
 #define VRY_PIN         1
+/* This pins have to be attached to a Digital Pin Usable For Interrupts.
+   Use digital pin 2 or 3 with arduino uno boards. */
 #define SW_PIN          2
-
+/* Used as a default value for the sensitivity */
 #define EPSILON         16
+/* Maximum and Minimum X and Y Axis values default range. */
 #define AXIS_MIN_VALUE  0
 #define AXIS_MAX_VALUE  1024
 
@@ -68,7 +73,7 @@ class KY_SJoys {
     uint16_t roundNum(uint16_t toRound, uint8_t num);
   private:
     uint8_t Pin[SJOY_PIN_NBR];  /* used to store the Arduino pins connected to the Keyes SJoytick pins */
-    short sensitivity;          /* defines the measurements sensitivity */
+    short   sensitivity;        /* defines the measurements sensitivity */
 };
 
 #endif
