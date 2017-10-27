@@ -1,6 +1,6 @@
 /*
    KY_SJoys.cpp
-   
+
    Copyright © 2017, by Wissem Boussetta
 
    This file is part of The KY-SJoys Keyes Joystick library for for arduino (KY-SJoys).
@@ -22,20 +22,21 @@
 #include "KY_SJoys.h"
 #include <Arduino.h>
 
-KY_SJoys::KY_SJoys(uint8_t VRx, uint8_t VRy, uint8_t SW) {
-  this->VRx = VRx;
-  this->VRx = VRy;
-  this->SW = SW;
+KY_SJoys::KY_SJoys(uint8_t VRx, uint8_t VRy, uint8_t SW, short sensitivity) {
+  this->Pin[VRX_PIN] = VRx;
+  this->Pin[VRY_PIN] = VRy;
+  this->Pin[SW_PIN]  = SW;
+  this->sensitivity = sensitivity;
 }
 
 
 void KY_SJoys::initialize() {
-  pinMode(this->SW, INPUT);
-  digitalWrite(this->SW, HIGH);
+  pinMode(this->Pin[SW_PIN], INPUT);
+  digitalWrite(this->Pin[SW_PIN], HIGH);
 }
 
 uint16_t KY_SJoys::readVRx() {
-  return (uint16_t)analogRead(this->VRx);
+  return (uint16_t)analogRead(this->Pin[VRX_PIN]);
 }
 
 int KY_SJoys::readVRx(int toLow, int toHigh) {
@@ -44,7 +45,7 @@ int KY_SJoys::readVRx(int toLow, int toHigh) {
 }
 
 uint16_t KY_SJoys::readVRy() {
-  return (uint16_t)analogRead(this->VRy);
+  return (uint16_t)analogRead(this->Pin[VRY_PIN]);
 }
 
 int KY_SJoys::readVRy(int toLow, int toHigh) {
@@ -53,5 +54,22 @@ int KY_SJoys::readVRy(int toLow, int toHigh) {
 }
 
 uint8_t KY_SJoys::readSW() {
-  return (uint8_t)digitalRead(this->SW);
+  return (uint8_t)digitalRead(this->Pin[SW_PIN]);
 }
+
+SJoysInfo KY_SJoys::read() {
+  SJoysInfo info = {this->readVRx(),
+                    this->readVRy(),
+                    this->readSW(),
+                   };
+  return info;
+}
+
+SJoysInfo KY_SJoys::read(int toLow, int toHigh) {
+  SJoysInfo info = {this->readVRx(toLow, toHigh),
+                    this->readVRy(toLow, toHigh),
+                    this->readSW(),
+                   };
+  return info;
+}
+
