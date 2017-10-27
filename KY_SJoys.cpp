@@ -36,7 +36,7 @@ void KY_SJoys::initialize() {
 }
 
 uint16_t KY_SJoys::readVRx() {
-  return (uint16_t)analogRead(this->Pin[VRX_PIN]);
+  return roundNum((uint16_t)analogRead(this->Pin[VRX_PIN]), this->sensitivity);
 }
 
 int KY_SJoys::readVRx(int toLow, int toHigh) {
@@ -45,7 +45,7 @@ int KY_SJoys::readVRx(int toLow, int toHigh) {
 }
 
 uint16_t KY_SJoys::readVRy() {
-  return (uint16_t)analogRead(this->Pin[VRY_PIN]);
+  return roundNum((uint16_t)analogRead(this->Pin[VRY_PIN]), this->sensitivity);
 }
 
 int KY_SJoys::readVRy(int toLow, int toHigh) {
@@ -71,5 +71,10 @@ SJoysInfo KY_SJoys::read(int toLow, int toHigh) {
                     this->readSW(),
                    };
   return info;
+}
+
+uint16_t KY_SJoys::roundNum(uint16_t toRound, uint8_t num) {
+  uint16_t rem = toRound % num;
+  return rem > (num / 2) ? (toRound - rem + num) : (toRound - rem);
 }
 

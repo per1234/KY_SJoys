@@ -33,7 +33,7 @@ void setup() {
     vPrintTask,
     ( signed portCHAR * )
     "vPrintTask",
-    64,
+    128,
     NULL,
     tskIDLE_PRIORITY + 1,
     NULL );

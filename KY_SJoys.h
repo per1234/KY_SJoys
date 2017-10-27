@@ -29,7 +29,7 @@
 #define VRY_PIN         1
 #define SW_PIN          2
 
-#define EPSILON         5
+#define EPSILON         16
 #define AXIS_MIN_VALUE  0
 #define AXIS_MAX_VALUE  1024
 
@@ -52,8 +52,9 @@ class KY_SJoys {
     /* */
     SJoysInfo read();
     SJoysInfo read(int toLow, int toHigh);
+    uint16_t roundNum(uint16_t,uint8_t);
   private:
-    uint8_t Pin[SJOY_PIN_NBR];
+    uint8_t Pin[SJOY_PIN_NBR]; /* */
     short sensitivity;
 };
 
