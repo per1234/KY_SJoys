@@ -27,6 +27,7 @@ KY_SJoys::KY_SJoys(uint8_t VRx, uint8_t VRy, uint8_t SW, short sensitivity) {
   this->Pin[VRY_PIN] = VRy;
   this->Pin[SW_PIN]  = SW;
   this->sensitivity = sensitivity;
+  this->OnOff = true;
 }
 
 
@@ -60,7 +61,7 @@ uint8_t KY_SJoys::readSW() {
 SJoysInfo KY_SJoys::read() {
   SJoysInfo info = {this->readVRx(),
                     this->readVRy(),
-                    this->readSW(),
+                    //this->readSW(),
                    };
   return info;
 }
@@ -68,7 +69,7 @@ SJoysInfo KY_SJoys::read() {
 SJoysInfo KY_SJoys::read(int toLow, int toHigh) {
   SJoysInfo info = {this->readVRx(toLow, toHigh),
                     this->readVRy(toLow, toHigh),
-                    this->readSW(),
+                    //this->readSW(),
                    };
   return info;
 }

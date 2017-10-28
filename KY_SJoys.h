@@ -36,6 +36,8 @@
 /* This pins have to be attached to a Digital Pin Usable For Interrupts.
    Use digital pin 2 or 3 with arduino uno boards. */
 #define SW_PIN          2
+/* Size of the switch status storage table */
+#define SW_QUEUE_LEN    8
 /* Used as a default value for the sensitivity */
 #define EPSILON         16
 /* Maximum and Minimum X and Y Axis values default range. */
@@ -49,7 +51,7 @@
 typedef struct SJoysInfo {
   short VRx;  // X Axis status value.
   short VRy;  // Y Axis status value.
-  short SW;   // Switch Button status.
+  //short SW;   // Switch Button status.
 } SJoysInfo;
 
 /* Class definition of the Keyes SJoystick */
@@ -72,8 +74,11 @@ class KY_SJoys {
     /* KY_SJoys::roundNum() Rounds an integer 'toRound' to nearest multiple of 'num' */
     uint16_t roundNum(uint16_t toRound, uint8_t num);
   private:
-    uint8_t Pin[SJOY_PIN_NBR];  /* used to store the Arduino pins connected to the Keyes SJoytick pins */
-    short   sensitivity;        /* defines the measurements sensitivity */
+    uint8_t Pin[SJOY_PIN_NBR];    /* used to store the Arduino pins connected to the Keyes SJoytick pins */
+    short   sensitivity;          /* defines the measurements sensitivity */
+  public:
+    short   SW_status[SW_QUEUE_LEN]; /* Keyes Sjoystik switch status storage table */
+    bool    OnOff;
 };
 
 #endif
