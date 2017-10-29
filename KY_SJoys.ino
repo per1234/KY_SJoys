@@ -38,13 +38,13 @@ void setup() {
     SJOYS_STACK_DEPTH,
     (void*)&xParameter,
     SJOYS_TASK_PRIORITY,
-    xSJoysTaskHandle );
+    &xSJoysTaskHandle );
 
   xTaskCreate(
     JoystikSwTask,
     ( signed portCHAR * )
     "JoystikSwTask",
-    128,
+    256,
     NULL,
     tskIDLE_PRIORITY + 1,
     NULL );
@@ -56,7 +56,7 @@ void setup() {
     128,
     NULL,
     tskIDLE_PRIORITY + 1,
-    xPrintTaskHandle );
+    &xPrintTaskHandle );
 
   vTaskStartScheduler();
 }
@@ -74,16 +74,26 @@ void JoystikSwTask(void *) {
     }
 
     if ((joystick.SW_status[index] - (joystick.SW_status[(index - 1) % SW_QUEUE_LEN])) == -1) {
+      taskENTER_CRITICAL();
       joystick.OnOff = !joystick.OnOff;
       if ( xSemaphoreTake( xSemaphore, 10 ) == pdTRUE ) {
         Serial.println("Joystick Switch Event");
         if (joystick.OnOff == true) {
           Serial.println("joystick.OnOff == true");
+          vTaskResume(xSJoysTaskHandle);
+          vTaskResume(xPrintTaskHandle);
+          Serial.println("xSJoysTaskHandle resumed");
+          Serial.println("xPrintTaskHandle resumed");
         } else {
           Serial.println("joystick.OnOff == false");
+          vTaskSuspend(xSJoysTaskHandle);
+          vTaskSuspend(xPrintTaskHandle);
+          Serial.println("xSJoysTaskHandle suspended");
+          Serial.println("xPrintTaskHandle suspended");
         }
         xSemaphoreGive( xSemaphore );
       }
+      taskEXIT_CRITICAL();
     }
   }
 }
